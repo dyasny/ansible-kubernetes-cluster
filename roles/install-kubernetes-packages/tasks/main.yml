@@ -1,5 +1,12 @@
 ---
 # tasks file for install-kubernetes-packages
+- name: Run apt upgrade
+  apt:
+    upgrade: "yes"
+    update_cache: yes
+    cache_valid_time: 432000
+  become: true
+
 - name: Installing Docker
   become: yes
   apt:
@@ -16,8 +23,12 @@
 - name: Installing APT Transport HTTPS
   become: yes
   apt:
-    name: apt-transport-https
+    name: "{{ item }}"
     state: present
+  loop:
+    - apt-transport-https
+    - ca-certificates
+    - curl
 
 - name: Adding kubernetes apt-key
   become: yes
@@ -28,7 +39,7 @@
 - name: Adding kubernetes APT repository
   become: yes
   apt_repository:
-   repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+   repo: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
    state: present
    filename: 'kubernetes'
 

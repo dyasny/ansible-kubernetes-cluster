@@ -3,10 +3,12 @@
 - name: Initializing the kubernetes cluster on the master node...
   become: yes
   shell: kubeadm init --pod-network-cidr=10.244.0.0/16
+  ignore_errors: yes
 
 - name: Creating .kube directory
   file:
-    path: $HOME/.kube
+    path: "/home/{{ ansible_user }}/.kube"
+    recurse: yes
     state: directory
     mode: 0755
 
@@ -14,10 +16,12 @@
   become: yes
   copy:
     src: /etc/kubernetes/admin.conf
-    dest: /home/ansible/.kube/config
+    dest: "/home/{{ ansible_user }}/.kube/config"
     remote_src: yes
-    owner: ansible
+    owner: "{{ ansible_user }}"
  
 - name: Installing Pod network.... (Flannel)
-  shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+  shell: |
+    export KUBECONFIG=/home/{{ ansible_user }}/.kube/config
+    kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 

@@ -3,4 +3,4 @@
 #
 - name: Joining to the cluster
   become: yes
-  shell: "{{ hostvars['kubemaster']['join_command'] }}"
+  shell: "{{ join_command }}"

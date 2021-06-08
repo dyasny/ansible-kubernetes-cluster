@@ -1,40 +1,50 @@
 - name: Installing kubernetes packages on all hosts...
   hosts: all
+  become: true
   roles:
     - install-kubernetes-packages
 
 - name: Disabling swap on all hosts...
   hosts: all
+  become: true
   roles:
     - disable-swap
 
 - name: Configuring networks on hosts...
   hosts: all
+  become: true
   roles:
     - configure-network-rules
 
 - name: Installing kubectl on master node...
   hosts: kubemaster
+  become: true
   roles:
     - install-kubectl
 
 - name: Deploying kubernetes cluster...
   hosts: kubemaster
+  become: true
   roles:
     - deploy-kubernetes
 
 - name: Getting token from the master node...
-  hosts: kubemaster
+  hosts: all
+  become: true
   roles:
     - get-join-command
 
-- name: Joining workers to the cluster...
-  hosts: kubeworkers
-  roles:
-    - join-cluster
+# - name: Joining workers to the cluster...
+#   hosts: kubeworkers
+#   become: true
+#   roles:
+#     - join-cluster
 
 - name: Starting installation of Helm...
   hosts: kubemaster
+  become: true
+  vars:
+    join_command: "{{ hostvars['variable_holder']['join_command'] }}"
   roles:
     - install-helm
 
