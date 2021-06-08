@@ -1,17 +1,17 @@
 - name: Installing kubernetes packages on all hosts...
-  hosts: all
+  hosts: kubemaster,kubeworkers
   become: true
   roles:
     - install-kubernetes-packages
 
 - name: Disabling swap on all hosts...
-  hosts: all
+  hosts: kubemaster,kubeworkers
   become: true
   roles:
     - disable-swap
 
 - name: Configuring networks on hosts...
-  hosts: all
+  hosts: kubemaster,kubeworkers
   become: true
   roles:
     - configure-network-rules
@@ -29,16 +29,10 @@
     - deploy-kubernetes
 
 - name: Getting token from the master node...
-  hosts: all
+  hosts: kubemaster,kubeworkers
   become: true
   roles:
     - get-join-command
-
-# - name: Joining workers to the cluster...
-#   hosts: kubeworkers
-#   become: true
-#   roles:
-#     - join-cluster
 
 - name: Starting installation of Helm...
   hosts: kubemaster
