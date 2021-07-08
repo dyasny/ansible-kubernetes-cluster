@@ -5,7 +5,7 @@
 # Prerequisites:
 * You should configure passwordless root for your ansible user
 * You should configure ssh access with ansible user's ssh key.
-* You should have an inventory file in place. 
+* You should have an inventory file in place, with `kubemaster` and `kubeworkers` groups
 
 After cloning this repo you can bootstrap your cluster with
 ```
